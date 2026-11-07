@@ -10,10 +10,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code, multi-model artifacts, analytics, and data
+# Copy application code, templates, multi-model artifacts, analytics, and data
 COPY app.py model.joblib features.json metrics.json analytics.json ./
+COPY templates/ ./templates/
 COPY data/ ./data/
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+

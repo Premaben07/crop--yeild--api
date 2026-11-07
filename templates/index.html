@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Crop Yield, Advisory & Financial Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-hover: #1b5e20;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #263238;
+            --border: #cfd8dc;
+            --accent: #388e3c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: var(--card);
+            max-width: 900px;
+            width: 100%;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e8f5e9;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: var(--primary);
+            font-size: 26px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #e8f5e9;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 12px;
+            border: 1px solid #c8e6c9;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #607d8b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 580px) { .grid { grid-template-columns: 1fr; } }
+        .field { margin-bottom: 16px; }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #37474f;
+        }
+        input, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            color: var(--text);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .weather-bar {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .weather-info {
+            font-size: 13px;
+            color: #0277bd;
+        }
+        .weather-status {
+            font-size: 12px;
+            font-weight: 600;
+            color: #01579b;
+            margin-top: 3px;
+        }
+        .fin-details {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .fin-summary {
+            padding: 12px 16px;
+            font-size: 13.5px;
+            font-weight: bold;
+            color: #e65100;
+            cursor: pointer;
+            user-select: none;
+            background: #fff3e0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .fin-summary::-webkit-details-marker { display: none; }
+        .fin-body {
+            padding: 16px;
+        }
+        .btn {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: var(--primary-hover); }
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 13px;
+            width: auto;
+            margin-top: 0;
+            background: #0288d1;
+            white-space: nowrap;
+        }
+        .btn-sm:hover { background: #01579b; }
+        .btn-pdf {
+            background: #d32f2f;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            width: auto;
+            padding: 10px 16px;
+            font-size: 14px;
+            margin-top: 14px;
+        }
+        .btn-pdf:hover { background: #b71c1c; }
+        .btn-secondary {
+            background: #eceff1;
+            color: #37474f;
+            text-decoration: none;
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #cfd8dc;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 24px;
+            padding: 22px;
+            background: #f1f8e9;
+            border: 1px solid #c5e1a5;
+            border-radius: 12px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result-title { font-size: 13px; font-weight: 600; color: #558b2f; text-transform: uppercase; }
+        .result-val { font-size: 32px; font-weight: bold; color: var(--primary); margin: 6px 0; }
+        .result-sub { font-size: 15px; color: #558b2f; }
+        .fin-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        @media (max-width: 600px) { .fin-cards { grid-template-columns: 1fr; } }
+        .fin-card {
+            background: #ffffff;
+            border: 1px solid #c5e1a5;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .fin-card-lbl { font-size: 11.5px; color: #607d8b; text-transform: uppercase; font-weight: 600; }
+        .fin-card-val { font-size: 18px; font-weight: bold; color: #2e7d32; margin-top: 4px; }
+        .advisory-box {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px dashed #a5d6a7;
+        }
+        .advisory-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        .rec-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            color: #37474f;
+        }
+        .sens-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .sens-tag {
+            font-size: 11px;
+            background: #ffffff;
+            border: 1px solid #a5d6a7;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .lb-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .lb-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .lb-card.top { border-left: 5px solid #2e7d32; background: #fafdfa; }
+        .lb-rank { font-size: 20px; font-weight: bold; color: #78909c; width: 40px; }
+        .lb-rank.gold { color: #f57f17; }
+        .lb-rank.silver { color: #757575; }
+        .lb-rank.bronze { color: #a1887f; }
+        .lb-info { flex-grow: 1; margin-left: 10px; }
+        .lb-crop { font-size: 16px; font-weight: bold; color: #263238; }
+        .lb-stats { font-size: 13px; color: #607d8b; margin-top: 3px; }
+        .lb-profit { text-align: right; }
+        .lb-profit-val { font-size: 16px; font-weight: bold; color: #2e7d32; }
+        .lb-badge { font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
+        .lb-badge.rec { background: #e8f5e9; color: #2e7d32; }
+        .lb-badge.mod { background: #fff3e0; color: #ef6c00; }
+        .dropzone {
+            border: 2px dashed #81c784;
+            background: #f9fbf9;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .chart-box {
+            margin-top: 20px;
+            background: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .chart-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .footer-links {
+            margin-top: 30px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        .footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .footer-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>🌾 Crop Yield & Farm Advisory Platform</h1>
+                <small style="color:#607d8b;">FAO Agricultural Dataset (28,242 records across 101 countries)</small>
+            </div>
+            <div class="badges">
+                <!--MODEL_BADGES-->
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'single')">Single Prediction & Advisory</button>
+            <button class="tab-btn" onclick="switchTab(event, 'leaderboard')">🏆 Optimal Crop Leaderboard</button>
+            <button class="tab-btn" onclick="switchTab(event, 'insights')">Insights & Trends</button>
+            <button class="tab-btn" onclick="switchTab(event, 'batch')">Batch CSV Prediction</button>
+        </div>
+
+        <!-- TAB 1: Single Prediction -->
+        <div id="tab-single" class="tab-content active">
+            <div class="weather-bar">
+                <div class="weather-info">
+                    <strong>🌦️ Real-Time Climate Sync:</strong> Pull live rainfall and temperature forecasts automatically.
+                    <div id="weather-msg" class="weather-status">Ready to sync live climate data.</div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="fetchLiveWeather()" id="weather-btn">Fetch Live Weather</button>
+            </div>
+
+            <form id="yield-form">
+                <div class="grid">
+                    <div class="field">
+                        <label for="model_name">AI Model Algorithm</label>
+                        <select id="model_name" name="model_name">
+                            <!--MODEL_OPTIONS-->
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="Year">Year</label>
+                        <input type="number" id="Year" name="Year" value="2013" min="1990" max="2030" required>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label for="Area">Country / Region</label>
+                        <select id="Area" name="Area" required onchange="onCountryChanged()">
+                            <!--COUNTRY_OPTIONS-->
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="Item">Crop Variety</label>
+                        <select id="Item" name="Item" required onchange="onCropChanged()">
+                            <!--CROP_OPTIONS-->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label for="average_rain_fall_mm_per_year">Avg Rainfall (mm/year)</label>
+                        <input type="number" step="any" id="average_rain_fall_mm_per_year" name="average_rain_fall_mm_per_year" value="1485.0" required>
+                    </div>
+                    <div class="field">
+                        <label for="avg_temp">Avg Temperature (°C)</label>
+                        <input type="number" step="any" id="avg_temp" name="avg_temp" value="24.5" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="pesticides_tonnes">Pesticides Usage (tonnes)</label>
+                    <input type="number" step="any" id="pesticides_tonnes" name="pesticides_tonnes" value="121.0" required>
+                </div>
+
+                <!-- Clickable Collapsible Financial Details -->
+                <details class="fin-details" open>
+                    <summary class="fin-summary">
+                        <span>💰 Commercial Farm Profitability Parameters (Optional)</span>
+                        <span style="font-size:12px; color:#ef6c00;">▼ Click to expand/collapse</span>
+                    </summary>
+                    <div class="fin-body">
+                        <div class="grid" style="margin-bottom:0;">
+                            <div class="field" style="margin-bottom:0;">
+                                <label for="market_price_per_ton">Market Price ($ / metric ton)</label>
+                                <input type="number" step="any" id="market_price_per_ton" name="market_price_per_ton" value="380.0">
+                            </div>
+                            <div class="field" style="margin-bottom:0;">
+                                <label for="cost_per_hectare">Production Cost ($ / hectare)</label>
+                                <input type="number" step="any" id="cost_per_hectare" name="cost_per_hectare" value="950.0">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <button type="submit" class="btn" id="predict-btn">Predict Crop Yield & Run Advisory</button>
+            </form>
+
+            <div id="result" class="result">
+                <div class="result-title">Predicted Yield:</div>
+                <div id="result-val" class="result-val"></div>
+                <div id="result-sub" class="result-sub"></div>
+                <div id="latency" style="font-size:12px; color:#78909c; margin-top:4px;"></div>
+
+                <div class="fin-cards" id="fin-cards">
+                    <div class="fin-card">
+                        <div class="fin-card-lbl">Gross Revenue</div>
+                        <div class="fin-card-val" id="fin-rev">$0 / ha</div>
+                    </div>
+                    <div class="fin-card">
+                        <div class="fin-card-lbl">Net Profit</div>
+                        <div class="fin-card-val" id="fin-profit">$0 / ha</div>
+                    </div>
+                    <div class="fin-card">
+                        <div class="fin-card-lbl">Projected ROI</div>
+                        <div class="fin-card-val" id="fin-roi">0%</div>
+                    </div>
+                </div>
+
+                <div class="advisory-box">
+                    <div class="advisory-title">💡 Actionable Agronomic Advisory:</div>
+                    <div id="advisory-recs"></div>
+
+                    <div style="margin-top:10px; font-size:12px; font-weight:600; color:#2e7d32;">What-If Sensitivity Impact:</div>
+                    <div id="sens-tags" class="sens-tags"></div>
+                </div>
+
+                <button type="button" class="btn btn-pdf" onclick="downloadReport()">📄 Download Official PDF Report</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: Optimal Crop Leaderboard -->
+        <div id="tab-leaderboard" class="tab-content">
+            <p style="color:#546e7a; font-size:14px; margin-top:0;">Compare all 10 major crops simultaneously under your plot's climate and country conditions to identify the highest-yielding and most profitable crops.</p>
+
+            <form id="lb-form">
+                <div class="grid">
+                    <div class="field">
+                        <label for="lb_Area">Country / Region</label>
+                        <select id="lb_Area" name="Area">
+                            <!--COUNTRY_OPTIONS-->
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="lb_model_name">AI Model Algorithm</label>
+                        <select id="lb_model_name" name="model_name">
+                            <!--MODEL_OPTIONS-->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label for="lb_rainfall">Avg Rainfall (mm/year)</label>
+                        <input type="number" step="any" id="lb_rainfall" value="1485.0" required>
+                    </div>
+                    <div class="field">
+                        <label for="lb_temp">Avg Temperature (°C)</label>
+                        <input type="number" step="any" id="lb_temp" value="24.5" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="lb-btn">🌾 Generate Optimal Crop Rankings</button>
+            </form>
+
+            <div id="lb-results" style="margin-top:24px; display:none;">
+                <div style="font-size:15px; font-weight:bold; color:#1b5e20; margin-bottom:14px;" id="lb-title">Top Recommended Crops:</div>
+                <div id="lb-list"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Insights & Trends -->
+        <div id="tab-insights" class="tab-content">
+            <div class="chart-box">
+                <div class="chart-title">📊 Top Feature Importances (Random Forest)</div>
+                <canvas id="importanceChart" height="130"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <div class="chart-title" id="trendTitle">📈 Historical Yield Trends (1990–2013)</div>
+                <canvas id="trendsChart" height="130"></canvas>
+            </div>
+        </div>
+
+        <!-- TAB 4: Batch CSV Prediction -->
+        <div id="tab-batch" class="tab-content">
+            <p style="color:#546e7a; font-size:14px; margin-top:0;">Upload a CSV file containing agricultural data to generate predictions for multiple fields in bulk.</p>
+            <div style="margin-bottom: 20px;">
+                <a href="/sample-template" class="btn-secondary" download>📥 Download Sample CSV Template</a>
+            </div>
+
+            <form id="batch-form" enctype="multipart/form-data">
+                <div class="field">
+                    <label for="batch_model_name">Select Prediction Model</label>
+                    <select id="batch_model_name" name="model_name">
+                        <!--MODEL_OPTIONS-->
+                    </select>
+                </div>
+
+                <div class="dropzone" onclick="document.getElementById('file-input').click()">
+                    <div style="font-size:32px;">📄</div>
+                    <div id="file-label" style="font-weight:600; margin-top:6px; color:#2e7d32;">Click to select CSV or drag & drop</div>
+                    <small style="color:#78909c;">Required columns: Area, Item, Year, average_rain_fall_mm_per_year, pesticides_tonnes, avg_temp</small>
+                    <input type="file" id="file-input" name="file" accept=".csv" required onchange="handleFileSelected(this)">
+                </div>
+
+                <button type="submit" class="btn" id="batch-btn">Run Batch Predictions & Download CSV</button>
+            </form>
+            <div id="batch-msg" style="margin-top:14px; font-weight:600; color:#2e7d32; display:none;"></div>
+        </div>
+
+        <div class="footer-links">
+            <a href="/docs" target="_blank">📖 Swagger API Docs</a>
+            <a href="/health" target="_blank">🩺 Health Status & Metrics</a>
+            <a href="/weather/forecast?country=India" target="_blank">🌦️ Live Weather API</a>
+        </div>
+    </div>
+
+    <script id="app-script">
+        const importanceData = <!--IMPORTANCE_JSON-->;
+        const defaultPrices = <!--DEFAULT_PRICES_JSON-->;
+        const defaultCosts = <!--DEFAULT_COSTS_JSON-->;
+
+        let importanceChart = null;
+        let trendsChart = null;
+        let lastPayload = null;
+        let lastResult = null;
+
+        function switchTab(evt, name) {
+            document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            }
+            var target = document.getElementById('tab-' + name);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            if (name === 'insights') {
+                initCharts();
+            }
+        }
+
+        function onCountryChanged() {
+            fetchTrends();
+        }
+
+        function onCropChanged() {
+            var crop = document.getElementById('Item').value;
+            if (defaultPrices[crop]) {
+                document.getElementById('market_price_per_ton').value = defaultPrices[crop];
+            }
+            if (defaultCosts[crop]) {
+                document.getElementById('cost_per_hectare').value = defaultCosts[crop];
+            }
+            fetchTrends();
+        }
+
+        async function fetchLiveWeather() {
+            var country = document.getElementById('Area').value;
+            var btn = document.getElementById('weather-btn');
+            var msg = document.getElementById('weather-msg');
+            btn.innerText = 'Fetching...';
+            btn.disabled = true;
+
+            try {
+                var res = await fetch('/weather/forecast?country=' + encodeURIComponent(country));
+                var data = await res.json();
+                if (res.ok && data.temperature !== undefined) {
+                    document.getElementById('avg_temp').value = data.temperature;
+                    document.getElementById('average_rain_fall_mm_per_year').value = data.rainfall_annual_est;
+                    msg.innerText = '✅ Live climate synced for ' + (data.city || country) + ': ' + data.temperature + ' °C, ' + data.rainfall_annual_est + ' mm/year';
+                } else {
+                    msg.innerText = '⚠️ Could not fetch live weather: ' + (data.detail || 'check connection');
+                }
+            } catch (err) {
+                msg.innerText = '⚠️ Weather fetch error: ' + err.message;
+            } finally {
+                btn.innerText = 'Fetch Live Weather';
+                btn.disabled = false;
+            }
+        }
+
+        var form = document.getElementById('yield-form');
+        var resultBox = document.getElementById('result');
+        var resultVal = document.getElementById('result-val');
+        var resultSub = document.getElementById('result-sub');
+        var latencyDiv = document.getElementById('latency');
+        var recsBox = document.getElementById('advisory-recs');
+        var sensBox = document.getElementById('sens-tags');
+        var predictBtn = document.getElementById('predict-btn');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var modelName = document.getElementById('model_name').value;
+            var payload = {
+                Area: document.getElementById('Area').value,
+                Item: document.getElementById('Item').value,
+                Year: parseInt(document.getElementById('Year').value),
+                avg_temp: parseFloat(document.getElementById('avg_temp').value),
+                average_rain_fall_mm_per_year: parseFloat(document.getElementById('average_rain_fall_mm_per_year').value),
+                pesticides_tonnes: parseFloat(document.getElementById('pesticides_tonnes').value),
+                market_price_per_ton: parseFloat(document.getElementById('market_price_per_ton').value),
+                cost_per_hectare: parseFloat(document.getElementById('cost_per_hectare').value),
+                model_name: modelName
+            };
+
+            predictBtn.innerText = 'Calculating Yield & Advisory...';
+            predictBtn.disabled = true;
+
+            var t0 = performance.now();
+            try {
+                var res = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                var data = await res.json();
+                var latency = Math.round(performance.now() - t0);
+                if (res.ok) {
+                    lastPayload = payload;
+                    lastResult = data;
+
+                    resultVal.innerText = Number(data.prediction_hg_ha).toLocaleString() + ' hg/ha';
+                    resultSub.innerText = '≈ ' + Number(data.prediction_tons_per_ha).toFixed(2) + ' metric tons per hectare';
+                    latencyDiv.innerText = 'Model: ' + modelName.replace('_', ' ') + ' | Latency: ' + latency + ' ms';
+
+                    if (data.financials) {
+                        document.getElementById('fin-rev').innerText = '$' + Number(data.financials.gross_revenue).toLocaleString();
+                        document.getElementById('fin-profit').innerText = '$' + Number(data.financials.net_profit).toLocaleString();
+                        document.getElementById('fin-roi').innerText = (data.financials.roi_pct > 0 ? '+' : '') + data.financials.roi_pct + '%';
+                        document.getElementById('fin-profit').style.color = data.financials.net_profit >= 0 ? '#2e7d32' : '#d32f2f';
+                    }
+
+                    recsBox.innerHTML = '';
+                    if (data.advisory && data.advisory.recommendations) {
+                        data.advisory.recommendations.forEach(function(r) {
+                            var d = document.createElement('div');
+                            d.className = 'rec-item';
+                            d.innerText = r;
+                            recsBox.appendChild(d);
+                        });
+                    }
+
+                    sensBox.innerHTML = '';
+                    if (data.advisory && data.advisory.sensitivity) {
+                        data.advisory.sensitivity.forEach(function(s) {
+                            var tag = document.createElement('span');
+                            tag.className = 'sens-tag';
+                            var sign = s.pct_change > 0 ? '+' : '';
+                            tag.innerText = s.scenario + ': ' + sign + s.pct_change + '% (' + s.predicted_yield_tons + ' t/ha)';
+                            sensBox.appendChild(tag);
+                        });
+                    }
+
+                    resultBox.className = 'result show';
+                    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    alert('Prediction Error: ' + JSON.stringify(data.detail));
+                }
+            } catch (err) {
+                alert('Request failed: ' + err.message);
+            } finally {
+                predictBtn.innerText = 'Predict Crop Yield & Run Advisory';
+                predictBtn.disabled = false;
+            }
+        });
+
+        // Optimal Crop Leaderboard
+        var lbForm = document.getElementById('lb-form');
+        lbForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('lb-btn');
+            var resBox = document.getElementById('lb-results');
+            var list = document.getElementById('lb-list');
+            btn.innerText = 'Analyzing 10 crops...';
+            btn.disabled = true;
+
+            var payload = {
+                Area: document.getElementById('lb_Area').value,
+                Year: 2013,
+                average_rain_fall_mm_per_year: parseFloat(document.getElementById('lb_rainfall').value),
+                avg_temp: parseFloat(document.getElementById('lb_temp').value),
+                pesticides_tonnes: 121.0,
+                model_name: document.getElementById('lb_model_name').value
+            };
+
+            try {
+                var res = await fetch('/recommend/leaderboard', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                var data = await res.json();
+                if (res.ok) {
+                    document.getElementById('lb-title').innerText = '🏆 Optimal Crop Rankings for ' + payload.Area + ':';
+                    list.innerHTML = '';
+                    data.forEach(function(c) {
+                        var medal = c.rank === 1 ? '🥇' : c.rank === 2 ? '🥈' : c.rank === 3 ? '🥉' : '#' + c.rank;
+                        var rankClass = c.rank === 1 ? 'gold' : c.rank === 2 ? 'silver' : c.rank === 3 ? 'bronze' : '';
+                        var badgeClass = c.rank <= 3 ? 'rec' : 'mod';
+                        var badgeText = c.rank <= 3 ? 'Highly Recommended' : 'Alternative';
+
+                        var div = document.createElement('div');
+                        div.className = 'lb-card ' + (c.rank <= 3 ? 'top' : '');
+                        div.innerHTML = '<div class="lb-rank ' + rankClass + '">' + medal + '</div>'
+                            + '<div class="lb-info">'
+                            + '  <div class="lb-crop">' + c.crop + '</div>'
+                            + '  <div class="lb-stats">Projected Yield: <strong>' + c.predicted_yield_tons_ha + ' tons/ha</strong> (' + Number(c.predicted_yield_hg_ha).toLocaleString() + ' hg/ha)</div>'
+                            + '</div>'
+                            + '<div class="lb-profit">'
+                            + '  <div class="lb-profit-val">+$' + Number(c.financials.net_profit).toLocaleString() + ' / ha</div>'
+                            + '  <span class="lb-badge ' + badgeClass + '">' + badgeText + ' (ROI ' + c.financials.roi_pct + '%)</span>'
+                            + '</div>';
+                        list.appendChild(div);
+                    });
+                    resBox.style.display = 'block';
+                    resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    alert('Leaderboard error: ' + JSON.stringify(data.detail));
+                }
+            } catch (err) {
+                alert('Failed to generate rankings: ' + err.message);
+            } finally {
+                btn.innerText = '🌾 Generate Optimal Crop Rankings';
+                btn.disabled = false;
+            }
+        });
+
+        async function downloadReport() {
+            if (!lastPayload || !lastResult) return;
+            var res = await fetch('/report/pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(lastPayload)
+            });
+            var blob = await res.blob();
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'Crop_Yield_Report_' + lastPayload.Area + '_' + lastPayload.Item.replace(/[^a-zA-Z]/g, '') + '.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function initCharts() {
+            if (!importanceChart) {
+                var ctx = document.getElementById('importanceChart').getContext('2d');
+                importanceChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: importanceData.map(function(d) { return d.feature; }),
+                        datasets: [{
+                            label: 'Relative Importance',
+                            data: importanceData.map(function(d) { return d.importance; }),
+                            backgroundColor: '#4caf50'
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+            fetchTrends();
+        }
+
+        async function fetchTrends() {
+            var area = document.getElementById('Area').value;
+            var item = document.getElementById('Item').value;
+            document.getElementById('trendTitle').innerText = '📈 Historical Yield Trends: ' + item + ' in ' + area + ' (1990–2013)';
+
+            try {
+                var res = await fetch('/analytics/trends?area=' + encodeURIComponent(area) + '&item=' + encodeURIComponent(item));
+                var data = await res.json();
+                renderTrendsChart(data);
+            } catch (err) {
+                console.error('Failed to load trends', err);
+            }
+        }
+
+        function renderTrendsChart(data) {
+            var ctx = document.getElementById('trendsChart').getContext('2d');
+            var years = data.map(function(d) { return d.Year; });
+            var yields = data.map(function(d) { return Number((d.yield / 10000).toFixed(2)); });
+
+            if (trendsChart) trendsChart.destroy();
+
+            trendsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Yield (metric tons/hectare)',
+                        data: yields,
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { title: { display: true, text: 'Tons / Hectare' } },
+                        x: { title: { display: true, text: 'Year' } }
+                    }
+                }
+            });
+        }
+
+        function handleFileSelected(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('file-label').innerText = 'Selected: ' + input.files[0].name;
+            }
+        }
+
+        document.getElementById('batch-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var fileInput = document.getElementById('file-input');
+            var modelName = document.getElementById('batch_model_name').value;
+            var msg = document.getElementById('batch-msg');
+            var btn = document.getElementById('batch-btn');
+
+            if (!fileInput.files.length) return;
+
+            var formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('model_name', modelName);
+
+            btn.innerText = 'Processing batch predictions...';
+            btn.disabled = true;
+
+            try {
+                var res = await fetch('/predict-batch', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    var err = await res.json();
+                    alert('Batch error: ' + JSON.stringify(err.detail));
+                    return;
+                }
+
+                var blob = await res.blob();
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'crop_yield_predictions_' + modelName + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+
+                msg.innerText = '✅ Predictions complete! File downloaded.';
+                msg.style.display = 'block';
+            } catch (err) {
+                alert('Batch processing failed: ' + err.message);
+            } finally {
+                btn.innerText = 'Run Batch Predictions & Download CSV';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "feature_importance": [
+    {
+      "feature": "Crop: Potatoes",
+      "importance": 0.3693
+    },
+    {
+      "feature": "Crop: Cassava",
+      "importance": 0.1024
+    },
+    {
+      "feature": "Crop: Sweet potatoes",
+      "importance": 0.0862
+    },
+    {
+      "feature": "pesticides_tonnes",
+      "importance": 0.0701
+    },
+    {
+      "feature": "Country: India",
+      "importance": 0.0583
+    },
+    {
+      "feature": "average_rain_fall_mm_per_year",
+      "importance": 0.0442
+    },
+    {
+      "feature": "avg_temp",
+      "importance": 0.0418
+    },
+    {
+      "feature": "Year",
+      "importance": 0.033
+    },
+    {
+      "feature": "Crop: Yams",
+      "importance": 0.0275
+    },
+    {
+      "feature": "Country: United Kingdom",
+      "importance": 0.017
+    },
+    {
+      "feature": "Country: Japan",
+      "importance": 0.0168
+    },
+    {
+      "feature": "Crop: Plantains and others",
+      "importance": 0.0153
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "random_forest": {
+    "r2": 0.9876,
+    "mae": 3466.6454,
+    "train_time_sec": 5.5
+  },
+  "xgboost": {
+    "r2": 0.9559,
+    "mae": 11284.5889,
+    "train_time_sec": 0.45
+  },
+  "lightgbm": {
+    "r2": 0.9568,
+    "mae": 10567.9791,
+    "train_time_sec": 0.35
+  }
+}

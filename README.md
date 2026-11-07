@@ -6,14 +6,20 @@ An enterprise-ready machine-learning platform served as a REST API and interacti
 
 ## Features
 
-- **🌾 Real Kaggle Dataset**: Trained on 28,242 historical agricultural records from the FAO across 101 countries and 10 major crops.
+- **🌾 Real Kaggle FAO Dataset**: Trained on 28,242 historical agricultural records from the FAO across 101 countries and 10 major crops.
 - **⚡ Multi-Model Support**:
   - **Random Forest**: $R^2 = 0.9876$, $\text{MAE} = 3,466\text{ hg/ha}$ (Highest Accuracy)
   - **LightGBM**: $R^2 = 0.9568$ (Ultra-fast inference)
   - **XGBoost**: $R^2 = 0.9559$
+- **🌤️ Live Weather Integration**: 1-click real-time rainfall & temperature sync using Open-Meteo API.
+- **🌱 Smart Agronomic Advisory**: Dynamic sensitivity analysis & actionable recommendations based on weather deviations.
+- **🏆 Optimal Crop Leaderboard**: Vectorized multi-crop simulation ranking all 10 crops by expected yield and net profit.
+- **💰 Farm Profitability Calculator**: Full commercial financial model calculating total revenue, cost, net profit, ROI %, and break-even commodity price.
+- **📄 One-Click PDF Farm Reports**: Server-side branded executive PDF reports with ReportLab.
 - **📊 Visual Insights**: Feature importance bar chart and dynamic historical yield trend line chart (1990–2013).
 - **📁 Batch CSV Predictions**: Upload CSV spreadsheets with hundreds of fields/farms and download instant predictions in CSV format.
 - **🐳 Container Ready**: Complete `Dockerfile` and `docker-compose.yml` with Linux OpenMP runtime support.
+- **☁️ Cloud Deployable**: Ready for 1-click deploy to Render (`render.yaml`) and Docker container services.
 
 ---
 
